@@ -44,6 +44,7 @@
         <activity android:name="com.oinux.lanmitm.ui.HttpActivity" />
         <activity android:name="com.oinux.lanmitm.ui.InjectActivity" />
         <activity android:name="com.oinux.lanmitm.ui.HijackHistory" />
+        <activity android:name="com.oinux.lanmitm.ui.MitmSelect" />
         <activity
             android:name="com.oinux.lanmitm.ui.AboutActivity"
             android:theme="@style/Activity_DialogTheme" />

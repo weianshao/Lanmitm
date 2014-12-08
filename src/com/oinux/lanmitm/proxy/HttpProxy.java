@@ -116,17 +116,16 @@ public class HttpProxy extends Thread {
 			}
 		}
 	}
-	
-	class DeepDealThread extends DealThread{
 
-		public DeepDealThread(Socket client,
-				OnRequestListener onRequestListener) {
+	class DeepDealThread extends DealThread {
+
+		public DeepDealThread(Socket client, OnRequestListener onRequestListener) {
 			super(client, onRequestListener);
 		}
-		
+
 		@Override
-		public void run() {
-			
+		public void dealResponse(){
+			Log.v("deal", "deal");
 		}
 	}
 
@@ -142,6 +141,15 @@ public class HttpProxy extends Thread {
 		public DealThread(Socket client, OnRequestListener onRequestListener) {
 			this.onRequestListener = onRequestListener;
 			this.clientSocket = client;
+		}
+
+		public void dealResponse() throws IOException { 
+			byte[] buff = new byte[1024];
+			int len = -1;
+			while ((len = serverReader.read(buff, 0, 1024)) >= 0) {
+				writer.write(buff, 0, len);
+				writer.flush();
+			}
 		}
 
 		@Override
@@ -200,13 +208,8 @@ public class HttpProxy extends Thread {
 
 						serverWriter.write(request.getBytes());
 						serverWriter.flush();
-						
-						byte[] buff = new byte[1024];
-						int len = -1;
-						while ((len = serverReader.read(buff, 0, 1024)) >= 0) {
-							writer.write(buff, 0, len);
-							writer.flush();
-						}
+
+						dealResponse();
 					}
 				}
 			} catch (IOException e) {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include layout="@layout/action_bar" />
+
+    <RelativeLayout
+        android:id="@+id/mitm_select_sniffer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff171c20"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:padding="10.0dip" >
+
+        <TextView
+            android:id="@+id/mitm_select_sniffer_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingTop="4.0dip"
+            android:text="数据嗅探"
+            android:textColor="#ffffffcc"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mitm_select_sniffer_head"
+            android:gravity="bottom|left|center"
+            android:text="抓取并转发局域网某台设备与其他主机的通信数据"
+            android:textColor="#ffffffff"
+            android:textSize="14.0dip" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000" />
+
+    <RelativeLayout
+        android:id="@+id/mitm_select_hijack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff171c20"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:padding="10.0dip" >
+
+        <TextView
+            android:id="@+id/mitm_select_hijack_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingTop="4.0dip"
+            android:text="会话劫持"
+            android:textColor="#ffffffcc"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mitm_select_hijack_head"
+            android:gravity="bottom|left|center"
+            android:text="劫持局域网中某台设备的http会话"
+            android:textColor="#ffffffff"
+            android:textSize="14.0dip" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000" />
+
+    <RelativeLayout
+        android:id="@+id/mitm_select_inject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff171c20"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:padding="10.0dip" >
+
+        <TextView
+            android:id="@+id/mitm_select_inject_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingTop="4.0dip"
+            android:text="代码注入"
+            android:textColor="#ffffffcc"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mitm_select_inject_head"
+            android:gravity="bottom|left|center"
+            android:text="对其他主机返回的http网页数据进行篡改，注入"
+            android:textColor="#ffffffff"
+            android:textSize="14.0dip" />
+    </RelativeLayout>
+
+</LinearLayout>
