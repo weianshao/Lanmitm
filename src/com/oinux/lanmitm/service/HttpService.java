@@ -9,6 +9,7 @@ import android.content.Intent;
 
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.ui.HttpActivity;
+import com.oinux.lanmitm.ui.InjectActivity;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.SimpleWebServer;
@@ -38,10 +39,16 @@ public class HttpService extends BaseService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		notice("httpserver后台运行中，点击管理",
-				HTTP_SERVER_NOTICE, HttpActivity.class);
 		AppContext.isHttpserverRunning = true;
 		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	@Override
+	public void onCreate() {
+		this.my_notice_id = HTTP_SERVER_NOTICE;
+		this.my_ticker_text = "httpserver后台运行中，点击管理";
+		this.cls = HttpActivity.class;
+		super.onCreate();
 	}
 
 	private void copyIndexHtml() {

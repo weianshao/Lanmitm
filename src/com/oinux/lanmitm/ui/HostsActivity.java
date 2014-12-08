@@ -117,52 +117,55 @@ public class HostsActivity extends ActionBarActivity {
 					int position, long id) {
 				LanHost host = (LanHost) parent.getItemAtPosition(position);
 				AppContext.setTarget(host);
-				RadioDialog.Builder builder = new RadioDialog.Builder(
-						HostsActivity.this);
-				builder.setTitle("选择功能")
-						.setRadio1("数据嗅探", false,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										dialog.dismiss();
-										if (AppContext.isTcpdumpRunning) {
-											stopService(new Intent(
-													HostsActivity.this,
-													SnifferService.class));
-										}
-										Intent intent = new Intent(
-												HostsActivity.this,
-												SniffActivity.class);
-										startActivity(intent);
-										overridePendingTransition(
-												R.anim.zoom_in,
-												android.R.anim.fade_out);
-									}
-								})
-						.setRadio2("会话劫持", false,
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										dialog.dismiss();
-										if (AppContext.isHijackRunning) {
-											stopService(new Intent(
-													HostsActivity.this,
-													HijackService.class));
-											if (AppContext.getHijackList() != null)
-												AppContext.getHijackList()
-														.clear();
-										}
-										Intent intent = new Intent(
-												HostsActivity.this,
-												HijackActivity.class);
-										startActivity(intent);
-										overridePendingTransition(
-												R.anim.zoom_in,
-												android.R.anim.fade_out);
-									}
-								})
+				startActivity(new Intent(HostsActivity.this, MitmSelect.class));
+				overridePendingTransition(R.anim.zoom_in,
+						android.R.anim.fade_out);
+//				RadioDialog.Builder builder = new RadioDialog.Builder(
+//						HostsActivity.this);
+//				builder.setTitle("选择功能")
+//						.setRadio1("数据嗅探", false,
+//								new DialogInterface.OnClickListener() {
+//									@Override
+//									public void onClick(DialogInterface dialog,
+//											int which) {
+//										dialog.dismiss();
+//										if (AppContext.isTcpdumpRunning) {
+//											stopService(new Intent(
+//													HostsActivity.this,
+//													SnifferService.class));
+//										}
+//										Intent intent = new Intent(
+//												HostsActivity.this,
+//												SniffActivity.class);
+//										startActivity(intent);
+//										overridePendingTransition(
+//												R.anim.zoom_in,
+//												android.R.anim.fade_out);
+//									}
+//								})
+//						.setRadio2("会话劫持", false,
+//								new DialogInterface.OnClickListener() {
+//									@Override
+//									public void onClick(DialogInterface dialog,
+//											int which) {
+//										dialog.dismiss();
+//										if (AppContext.isHijackRunning) {
+//											stopService(new Intent(
+//													HostsActivity.this,
+//													HijackService.class));
+//											if (AppContext.getHijackList() != null)
+//												AppContext.getHijackList()
+//														.clear();
+//										}
+//										Intent intent = new Intent(
+//												HostsActivity.this,
+//												HijackActivity.class);
+//										startActivity(intent);
+//										overridePendingTransition(
+//												R.anim.zoom_in,
+//												android.R.anim.fade_out);
+//									}
+//								})
 //						.setRadio3("代码注入", false,
 //								new DialogInterface.OnClickListener() {
 //									@Override
@@ -182,8 +185,7 @@ public class HostsActivity extends ActionBarActivity {
 //												R.anim.zoom_in,
 //												android.R.anim.fade_out);
 //									}
-//								})
-								.create().show();
+//								}).create().show();
 			}
 		});
 

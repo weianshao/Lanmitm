@@ -62,8 +62,6 @@ public class HijackActivity extends ActionBarActivity {
 							startService(intent);
 						} else {
 							stopService(intent);
-							NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-							nm.cancel(HijackService.HIJACK_NOTICE);
 						}
 					}
 				});

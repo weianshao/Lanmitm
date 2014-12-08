@@ -41,6 +41,14 @@ public class InjectService extends BaseService {
 		return super.onStartCommand(intent, flags, startId);
 	}
 
+	@Override
+	public void onCreate() {
+		this.my_notice_id = INJECT_NOTICE;
+		this.my_ticker_text = "代码注入后台运行中，点击管理";
+		this.cls = InjectActivity.class;
+		super.onCreate();
+	}
+
 	private void startInject() {
 		HttpProxy.stop = false;
 
@@ -52,14 +60,12 @@ public class InjectService extends BaseService {
 		}.start();
 
 		mHttpProxy = HttpProxy.getInstance();
-		mHttpProxy.setInject(inject); 
+		mHttpProxy.setInject(inject);
 		mHttpProxy.start();
 
 		Intent intent = new Intent(this, ArpService.class);
 		intent.putExtra("arp_cheat_way", ArpService.ONE_WAY_HOST);
 		startService(intent);
-
-		notice("代码注入后台运行中，点击管理", INJECT_NOTICE, InjectActivity.class);
 
 		AppContext.isInjectRunning = true;
 	}

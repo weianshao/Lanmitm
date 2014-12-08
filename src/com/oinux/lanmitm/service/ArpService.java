@@ -6,9 +6,11 @@ import java.net.SocketException;
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.util.ShellUtils;
 
+import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
 
-public class ArpService extends BaseService {
+public class ArpService extends Service {
 
 	private String[] FORWARD_COMMANDS = {
 			"echo 1 > /proc/sys/net/ipv4/ip_forward",
@@ -99,5 +101,10 @@ public class ArpService extends BaseService {
 			}
 		}.start();
 		super.onDestroy();
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
 	}
 }

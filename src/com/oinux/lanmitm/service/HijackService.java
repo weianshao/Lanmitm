@@ -10,6 +10,7 @@ import com.oinux.lanmitm.proxy.HttpProxy;
 import com.oinux.lanmitm.proxy.HttpProxy.OnRequestListener;
 import com.oinux.lanmitm.ui.HijackActivity;
 import com.oinux.lanmitm.ui.HttpActivity;
+import com.oinux.lanmitm.ui.SniffActivity;
 import com.oinux.lanmitm.util.RequestParser;
 import com.oinux.lanmitm.util.ShellUtils;
 
@@ -48,6 +49,14 @@ public class HijackService extends BaseService {
 		startHijack();
 
 		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	@Override
+	public void onCreate() {
+		this.my_notice_id = HIJACK_NOTICE;
+		this.my_ticker_text = "会话劫持后台运行中，点击管理";
+		this.cls = HijackActivity.class;
+		super.onCreate();
 	}
 
 	private void startHijack() {
@@ -111,8 +120,6 @@ public class HijackService extends BaseService {
 		Intent intent = new Intent(this, ArpService.class);
 		intent.putExtra("arp_cheat_way", ArpService.ONE_WAY_HOST);
 		startService(intent);
-
-		notice("会话劫持后台运行中，点击管理", HIJACK_NOTICE, HijackActivity.class);
 
 		AppContext.isHijackRunning = true;
 	}

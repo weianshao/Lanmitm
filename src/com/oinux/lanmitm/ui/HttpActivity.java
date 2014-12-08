@@ -86,8 +86,6 @@ public class HttpActivity extends ActionBarActivity implements OnClickListener {
 						} else {
 							stopService(new Intent(HttpActivity.this,
 									HttpService.class));
-							NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-							nm.cancel(HttpService.HTTP_SERVER_NOTICE);
 							Animation animation = new AlphaAnimation(1.0f, 0.0f);
 							animation.setDuration(500);
 							headView.startAnimation(animation);

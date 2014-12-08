@@ -2,6 +2,7 @@ package com.oinux.lanmitm.service;
 
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.ui.HijackActivity;
+import com.oinux.lanmitm.ui.HttpActivity;
 import com.oinux.lanmitm.ui.SniffActivity;
 import com.oinux.lanmitm.util.ShellUtils;
 
@@ -27,9 +28,15 @@ public class SnifferService extends BaseService {
 
 		startSniffer();
 
-		notice("数据嗅探后台运行中，点击管理", SNIFFER_NOTICE, SniffActivity.class);
-
 		return super.onStartCommand(intent, flags, startId);
+	}
+	
+	@Override
+	public void onCreate() {
+		this.my_notice_id = SNIFFER_NOTICE;
+		this.my_ticker_text = "数据嗅探后台运行中，点击管理";
+		this.cls = SniffActivity.class;
+		super.onCreate();
 	}
 
 	private void startSniffer() {

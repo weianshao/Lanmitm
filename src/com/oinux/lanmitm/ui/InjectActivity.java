@@ -50,8 +50,6 @@ public class InjectActivity extends ActionBarActivity {
 					startService(intent);
 				} else {
 					stopService(intent);
-					NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					nm.cancel(HijackService.INJECT_NOTICE);
 				}
 			}
 		});

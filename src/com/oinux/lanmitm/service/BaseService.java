@@ -18,13 +18,29 @@ public class BaseService extends Service {
 	public static final int INJECT_NOTICE = 4;
 	public static final int ARPSPOOF_NOTICE = 0;
 
+	protected int my_notice_id = -1;
+	protected String my_ticker_text = null;
+	protected Class<?> cls = null;
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		notice();
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	@Override
+	public void onDestroy() {
+		clearNotice();
+		super.onDestroy();
+	}
+
 	@SuppressWarnings("deprecation")
-	protected void notice(String tickerText, int id, Class<?> cls) {
+	protected void notice() {
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification n = new Notification(R.drawable.ic_launch_notice,
 				getString(R.string.app_name), System.currentTimeMillis());
@@ -36,7 +52,12 @@ public class BaseService extends Service {
 		PendingIntent contentIntent = PendingIntent.getActivity(this,
 				R.string.app_name, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		n.setLatestEventInfo(this, this.getString(R.string.app_name),
-				tickerText, contentIntent);
-		nm.notify(id, n);
+				my_ticker_text, contentIntent);
+		nm.notify(my_notice_id, n);
+	}
+
+	protected void clearNotice() {
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancel(my_notice_id);
 	}
 }

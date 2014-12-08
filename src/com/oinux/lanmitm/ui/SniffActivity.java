@@ -73,8 +73,6 @@ public class SniffActivity extends ActionBarActivity {
 											+ SnifferService.sniffer_file_name,
 									Toast.LENGTH_LONG).show();
 							stopService(intent);
-							NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-							nm.cancel(SnifferService.SNIFFER_NOTICE);
 						}
 					}
 				});
