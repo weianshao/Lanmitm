@@ -73,6 +73,7 @@ public class SniffActivity extends ActionBarActivity {
 											+ SnifferService.sniffer_file_name,
 									Toast.LENGTH_LONG).show();
 							stopService(intent);
+							headerView.setVisibility(View.GONE);
 						}
 					}
 				});

@@ -10,6 +10,7 @@ import com.oinux.lanmitm.ActionBarActivity;
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.R;
 import com.oinux.lanmitm.service.HijackService;
+import com.oinux.lanmitm.service.InjectService;
 import com.oinux.lanmitm.service.SnifferService;
 
 public class MitmSelect extends ActionBarActivity implements OnClickListener {
@@ -50,7 +51,12 @@ public class MitmSelect extends ActionBarActivity implements OnClickListener {
 			finish();
 			break;
 		case R.id.mitm_select_inject:
-
+			if (AppContext.isInjectRunning) {
+				stopService(new Intent(MitmSelect.this, InjectService.class));
+			}
+			intent = new Intent(MitmSelect.this, InjectActivity.class);
+			startActivity(intent);
+			finish();
 			break;
 
 		default:

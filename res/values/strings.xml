@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Lanmitm</string>
+    <string name="default_inject">&#060;script type=\'text&#047;javascript\'&#062;alert(\'lanmitm hacked\');&#060;&#047;script&#062;</string>
+
 </resources>

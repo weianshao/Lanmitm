@@ -1,18 +1,22 @@
 package com.oinux.lanmitm.ui;
 
-import android.app.NotificationManager;
-import android.content.Context;
+import java.util.regex.Pattern;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.oinux.lanmitm.ActionBarActivity;
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.R;
-import com.oinux.lanmitm.service.HijackService;
+import com.oinux.lanmitm.proxy.HttpProxy;
 import com.oinux.lanmitm.service.InjectService;
 
 /**
@@ -20,46 +24,82 @@ import com.oinux.lanmitm.service.InjectService;
  * @author oinux
  *
  */
-public class InjectActivity extends ActionBarActivity {
+public class InjectActivity extends ActionBarActivity implements
+		OnClickListener {
 
 	private static final String TAG = "InjectActivity";
 
 	private CheckBox injectCheckBox;
+	private EditText urlPatternText;
+	private EditText injectCodeText;
+	private View headerView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState,
-				com.oinux.lanmitm.R.layout.hijack_activity);
+				com.oinux.lanmitm.R.layout.inject_activity);
 
 		setBarTitle(Html.fromHtml("<b>代码注入</b> - <small>"
 				+ AppContext.getTarget().getIp() + "</small>"));
 
-		injectCheckBox = (CheckBox) findViewById(R.id.hijack_check_box);
+		headerView = findViewById(R.id.header_view);
+
+		injectCheckBox = (CheckBox) findViewById(R.id.inject_check_box);
 		if (AppContext.isInjectRunning) {
 			injectCheckBox.setChecked(true);
 		} else {
 			injectCheckBox.setChecked(false);
 		}
-		injectCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Intent intent = new Intent(InjectActivity.this,
-						InjectService.class);
-				if (isChecked) {
-					startService(intent);
-				} else {
-					stopService(intent);
-				}
-			}
-		});
+		injectCheckBox
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						Intent intent = new Intent(InjectActivity.this,
+								InjectService.class);
+						if (isChecked) {
+							headerView.setVisibility(View.VISIBLE);
+							startService(intent);
+						} else {
+							headerView.setVisibility(View.GONE);
+							stopService(intent);
+						}
+					}
+				});
+
+		findViewById(R.id.inject_save_btn).setOnClickListener(this);
+
+		urlPatternText = (EditText) findViewById(R.id.inject_pattern);
+		injectCodeText = (EditText) findViewById(R.id.inject_code);
+
+		urlPatternText.setText(HttpProxy.getInstance().getInjectPattern().pattern());
+		injectCodeText.setText(HttpProxy.getInstance().getInject()); 
 	}
 
-	
 	@Override
 	public void onBackPressed() {
 		finish();
 		overridePendingTransition(R.anim.z_slide_in_top,
 				R.anim.z_slide_out_bottom);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.inject_save_btn:
+			HttpProxy.getInstance().setInject(
+					injectCodeText.getEditableText().toString());
+			String pattern = urlPatternText.getEditableText().toString();
+			if (!pattern.isEmpty()) {
+				HttpProxy.getInstance().setInjectPattern(
+						Pattern.compile(pattern));
+			}
+			Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
+			break;
+
+		default:
+			break;
+		}
 	}
 }
