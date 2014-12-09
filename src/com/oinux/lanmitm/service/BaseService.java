@@ -1,5 +1,6 @@
 package com.oinux.lanmitm.service;
 
+import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.R;
 
 import android.app.Notification;
@@ -59,5 +60,21 @@ public class BaseService extends Service {
 	protected void clearNotice() {
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(my_notice_id);
+	}
+
+	protected void stopArpService() {
+		if (!AppContext.isHijackRunning && !AppContext.isInjectRunning
+				&& !AppContext.isTcpdumpRunning) {
+			stopService(new Intent(this, ArpService.class));
+		}
+	}
+
+	protected void startArpService() {
+		if (!AppContext.isHijackRunning && !AppContext.isInjectRunning
+				&& !AppContext.isTcpdumpRunning) {
+			Intent intent = new Intent(this, ArpService.class);
+			intent.putExtra("arp_cheat_way", ArpService.TWO_WAY);
+			startService(intent);
+		}
 	}
 }

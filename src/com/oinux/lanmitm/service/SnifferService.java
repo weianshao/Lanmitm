@@ -1,8 +1,6 @@
 package com.oinux.lanmitm.service;
 
 import com.oinux.lanmitm.AppContext;
-import com.oinux.lanmitm.ui.HijackActivity;
-import com.oinux.lanmitm.ui.HttpActivity;
 import com.oinux.lanmitm.ui.SniffActivity;
 import com.oinux.lanmitm.util.ShellUtils;
 
@@ -30,7 +28,7 @@ public class SnifferService extends BaseService {
 
 		return super.onStartCommand(intent, flags, startId);
 	}
-	
+
 	@Override
 	public void onCreate() {
 		this.my_notice_id = SNIFFER_NOTICE;
@@ -40,7 +38,8 @@ public class SnifferService extends BaseService {
 	}
 
 	private void startSniffer() {
-		startService(new Intent(this, ArpService.class));
+		
+		startArpService();
 
 		tcpdump = new Thread() {
 			@Override
@@ -65,8 +64,9 @@ public class SnifferService extends BaseService {
 				ShellUtils.execCommand("killall tcpdump", true, true);
 			}
 		}.start();
-		if (!AppContext.isHijackRunning)
-			stopService(new Intent(this, ArpService.class));
+
+		stopArpService();
+
 		AppContext.isTcpdumpRunning = false;
 	}
 

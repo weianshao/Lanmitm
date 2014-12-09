@@ -4,37 +4,19 @@ import java.util.ArrayList;
 
 import org.apache.http.impl.cookie.BasicClientCookie;
 
+import android.content.Intent;
+import android.util.Log;
+
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.entity.Session;
 import com.oinux.lanmitm.proxy.HttpProxy;
 import com.oinux.lanmitm.proxy.HttpProxy.OnRequestListener;
 import com.oinux.lanmitm.ui.HijackActivity;
-import com.oinux.lanmitm.ui.HttpActivity;
-import com.oinux.lanmitm.ui.SniffActivity;
 import com.oinux.lanmitm.util.RequestParser;
 import com.oinux.lanmitm.util.ShellUtils;
 
-import android.content.Intent;
-import android.util.Log;
+public class HijackService extends ProxyService {
 
-public class HijackService extends BaseService {
-
-	private static final String[] PORT_REDIRECT_CMD = {
-			"iptables -t nat -F",
-			"iptables -F",
-			"iptables -t nat -I POSTROUTING -s 0/0 -j MASQUERADE",
-			"iptables -P FORWARD ACCEPT",
-			"iptables -t nat -A PREROUTING -j DNAT -p tcp --dport 80 --to "
-					+ AppContext.getIp() + ":" + HttpProxy.HTTP_PROXY_PORT };
-
-	private static final String[] UN_PORT_REDIRECT_CMD = {
-			"iptables -t nat -F",
-			"iptables -F",
-			"iptables -t nat -I POSTROUTING -s 0/0 -j MASQUERADE",
-			"iptables -t nat -D PREROUTING -j DNAT -p tcp --dport 80 --to "
-					+ AppContext.getIp() + ":" + HttpProxy.HTTP_PROXY_PORT };
-
-	private HttpProxy mHttpProxy;
 	private OnRequestListener mOnRequestListener = null;
 
 	public static final String DATASET_CHANGED = "HIJACK_DATASET_CHANGED";
@@ -50,7 +32,7 @@ public class HijackService extends BaseService {
 
 		return super.onStartCommand(intent, flags, startId);
 	}
-	
+
 	@Override
 	public void onCreate() {
 		this.my_notice_id = HIJACK_NOTICE;
@@ -60,15 +42,9 @@ public class HijackService extends BaseService {
 	}
 
 	private void startHijack() {
-		HttpProxy.stop = false;
-
-		new Thread() {
-			@Override
-			public void run() {
-				ShellUtils.execCommand(PORT_REDIRECT_CMD, true, true);
-			}
-		}.start();
-
+		
+		startHttpProxy();
+		
 		mOnRequestListener = new OnRequestListener() {
 
 			@Override
@@ -113,35 +89,18 @@ public class HijackService extends BaseService {
 			}
 		};
 
-		mHttpProxy = HttpProxy.getInstance();
 		mHttpProxy.setOnRequestListener(mOnRequestListener);
-		mHttpProxy.start();
 
-		Intent intent = new Intent(this, ArpService.class);
-		intent.putExtra("arp_cheat_way", ArpService.ONE_WAY_HOST);
-		startService(intent);
+		startArpService();
 
 		AppContext.isHijackRunning = true;
 	}
 
 	private void stopHijack() {
-		if (!AppContext.isTcpdumpRunning)
-			stopService(new Intent(this, ArpService.class));
+		
+		stopArpService();
 
-		new Thread() {
-			@Override
-			public void run() {
-				ShellUtils.execCommand(UN_PORT_REDIRECT_CMD, true, true);
-			}
-		}.start();
-
-		if (!AppContext.isInjectRunning) {
-			HttpProxy.stop = true;
-			if (mHttpProxy != null) {
-				mHttpProxy.interrupt();
-				mHttpProxy = null;
-			}
-		}
+		stopHttpProxy();
 
 		AppContext.isHijackRunning = false;
 	}

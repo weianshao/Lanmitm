@@ -1,31 +1,13 @@
 package com.oinux.lanmitm.service;
 
+import android.content.Intent;
+
 import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.proxy.HttpProxy;
 import com.oinux.lanmitm.ui.InjectActivity;
 import com.oinux.lanmitm.util.ShellUtils;
 
-import android.content.Intent;
-
-public class InjectService extends BaseService {
-
-	private static final String[] PORT_REDIRECT_CMD = {
-			"iptables -t nat -F",
-			"iptables -F",
-			"iptables -t nat -I POSTROUTING -s 0/0 -j MASQUERADE",
-			"iptables -P FORWARD ACCEPT",
-			"iptables -t nat -A PREROUTING -j DNAT -p tcp --dport 80 --to "
-					+ AppContext.getIp() + ":" + HttpProxy.HTTP_PROXY_PORT };
-
-	private static final String[] UN_PORT_REDIRECT_CMD = {
-			"iptables -t nat -F",
-			"iptables -F",
-			"iptables -t nat -I POSTROUTING -s 0/0 -j MASQUERADE",
-			"iptables -t nat -D PREROUTING -j DNAT -p tcp --dport 80 --to "
-					+ AppContext.getIp() + ":" + HttpProxy.HTTP_PROXY_PORT };
-
-	private HttpProxy mHttpProxy;
-	private String inject = "ouyangwenguang";
+public class InjectService extends ProxyService {
 
 	public static final String DATASET_CHANGED = "HIJACK_DATASET_CHANGED";
 	public static final String DATASET_COOKIES_CHANGED = "HIJACK_COOKIES_CHANGED";
@@ -50,49 +32,29 @@ public class InjectService extends BaseService {
 	}
 
 	private void startInject() {
-		HttpProxy.stop = false;
+		startHttpProxy();
+		
+		mHttpProxy.setProxyMode(HttpProxy.MODE_PROXY_DEEP);
 
-		new Thread() {
-			@Override
-			public void run() {
-				ShellUtils.execCommand(PORT_REDIRECT_CMD, true, true);
-			}
-		}.start();
-
-		mHttpProxy = HttpProxy.getInstance();
-		mHttpProxy.setInject(inject);
-		mHttpProxy.start();
-
-		Intent intent = new Intent(this, ArpService.class);
-		intent.putExtra("arp_cheat_way", ArpService.ONE_WAY_HOST);
-		startService(intent);
-
+		startArpService();
+		
 		AppContext.isInjectRunning = true;
 	}
 
-	private void stopHijack() {
-		stopService(new Intent(this, ArpService.class));
+	private void stopInject() {
+		stopArpService();
 
-		new Thread() {
-			@Override
-			public void run() {
-				ShellUtils.execCommand(UN_PORT_REDIRECT_CMD, true, true);
-			}
-		}.start();
-
-		if (!AppContext.isHijackRunning) {
-			HttpProxy.stop = true;
-			if (mHttpProxy != null) {
-				mHttpProxy.interrupt();
-				mHttpProxy = null;
-			}
+		if (mHttpProxy != null) {
+			mHttpProxy.setProxyMode(HttpProxy.MODE_PROXY_SIMPLE);
 		}
+
+		stopHttpProxy();
 		AppContext.isInjectRunning = false;
 	}
 
 	@Override
 	public void onDestroy() {
-		stopHijack();
+		stopInject();
 		super.onDestroy();
 	}
 }
