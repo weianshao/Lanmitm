@@ -45,9 +45,27 @@ public class SniffActivity extends ActionBarActivity {
 		fileSizeText = (TextView) findViewById(R.id.header_text);
 
 		tcpdumpCheckBox = (CheckBox) findViewById(R.id.tcpdump_check_box);
+		
+		handler = new Handler();
+		updateRunnable = new Runnable() {
+
+			@Override
+			public void run() {
+				File file = new File(AppContext.getStoragePath() + "/"
+						+ SnifferService.sniffer_file_name);
+				if (file.exists()) {
+					fileSizeText.setText("已捕获 " + file.length()
+							/ (1000 * 1000f) + " MB数据");
+					fileSizeText.invalidate();
+				}
+				handler.postDelayed(this, 1000);
+			}
+		};
+		
 		if (AppContext.isTcpdumpRunning) {
 			tcpdumpCheckBox.setChecked(true);
 			headerView.setVisibility(View.VISIBLE);
+			handler.post(updateRunnable);
 		} else {
 			tcpdumpCheckBox.setChecked(false);
 		}
@@ -79,32 +97,21 @@ public class SniffActivity extends ActionBarActivity {
 						}
 					}
 				});
-
-		handler = new Handler();
-		updateRunnable = new Runnable() {
-
-			@Override
-			public void run() {
-				File file = new File(AppContext.getStoragePath() + "/"
-						+ SnifferService.sniffer_file_name);
-				if (file.exists()) {
-					fileSizeText.setText("已捕获 " + file.length()
-							/ (1000 * 1000f) + " MB数据");
-				}
-				handler.postDelayed(this, 1000);
-			}
-		};
 	}
+	
+	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+
 
 	@Override
 	public void onBackPressed() {
 		finish();
 		overridePendingTransition(R.anim.z_slide_in_top,
 				R.anim.z_slide_out_bottom);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
 	}
 }
