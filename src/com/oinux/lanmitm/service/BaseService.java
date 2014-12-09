@@ -73,7 +73,7 @@ public class BaseService extends Service {
 		if (!AppContext.isHijackRunning && !AppContext.isInjectRunning
 				&& !AppContext.isTcpdumpRunning) {
 			Intent intent = new Intent(this, ArpService.class);
-			intent.putExtra("arp_cheat_way", ArpService.TWO_WAY);
+			intent.putExtra("arp_cheat_way", ArpService.ONE_WAY_HOST);
 			startService(intent);
 		}
 	}

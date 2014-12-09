@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.oinux.lanmitm.entity.LanHost;
 import com.oinux.lanmitm.entity.Session;
+import com.oinux.lanmitm.service.ProxyService;
 import com.oinux.lanmitm.util.NetworkUtils;
 import com.oinux.lanmitm.util.ShellUtils;
 
@@ -61,8 +62,11 @@ public class AppContext extends Application {
 
 		initWifiInfo();
 
+		ShellUtils.execCommand(ProxyService.UN_PORT_REDIRECT_CMD, true, true);
+
 		super.onCreate();
 	}
+
 
 	public static void initWifiInfo() {
 		WifiManager wifiManager = (WifiManager) mContext

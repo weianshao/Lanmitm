@@ -6,7 +6,7 @@ import com.oinux.lanmitm.util.ShellUtils;
 
 public class ProxyService extends BaseService {
 
-	protected static final String[] PORT_REDIRECT_CMD = {
+	public static final String[] PORT_REDIRECT_CMD = {
 			"iptables -t nat -F",
 			"iptables -F",
 			"iptables -t nat -I POSTROUTING -s 0/0 -j MASQUERADE",
@@ -14,7 +14,7 @@ public class ProxyService extends BaseService {
 			"iptables -t nat -A PREROUTING -j DNAT -p tcp --dport 80 --to "
 					+ AppContext.getIp() + ":" + HttpProxy.HTTP_PROXY_PORT };
 
-	protected static final String[] UN_PORT_REDIRECT_CMD = {
+	public static final String[] UN_PORT_REDIRECT_CMD = {
 			"iptables -t nat -F",
 			"iptables -F",
 			"iptables -t nat -I POSTROUTING -s 0/0 -j MASQUERADE",
