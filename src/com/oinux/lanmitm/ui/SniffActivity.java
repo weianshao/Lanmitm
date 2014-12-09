@@ -63,6 +63,7 @@ public class SniffActivity extends ActionBarActivity {
 						if (isChecked) {
 							headerView.setVisibility(View.VISIBLE);
 							startService(intent);
+							handler.post(updateRunnable);
 						} else {
 							if (handler != null && updateRunnable != null) {
 								handler.removeCallbacks(updateRunnable);
@@ -74,6 +75,7 @@ public class SniffActivity extends ActionBarActivity {
 									Toast.LENGTH_LONG).show();
 							stopService(intent);
 							headerView.setVisibility(View.GONE);
+							fileSizeText.setText("");
 						}
 					}
 				});
@@ -92,7 +94,6 @@ public class SniffActivity extends ActionBarActivity {
 				handler.postDelayed(this, 1000);
 			}
 		};
-		handler.postDelayed(updateRunnable, 1000);
 	}
 
 	@Override
