@@ -131,10 +131,12 @@ public class HttpActivity extends ActionBarActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.http_server_log:
-			Intent intent = new Intent(this, BrowserActivity.class);
-			intent.putExtra("view_type", BrowserActivity.BROWSER_COMMON);
-			intent.putExtra("url", url);
-			startActivity(intent);
+			if (AppContext.isHttpserverRunning) {
+				Intent intent = new Intent(this, BrowserActivity.class);
+				intent.putExtra("view_type", BrowserActivity.BROWSER_COMMON);
+				intent.putExtra("url", url);
+				startActivity(intent);
+			}
 			break;
 		case R.id.httpserver_clone_btn:
 			Toast.makeText(this, "还没写", Toast.LENGTH_SHORT).show();
