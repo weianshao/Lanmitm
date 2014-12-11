@@ -45,6 +45,8 @@ Lanmitm — Android中间人攻击测试工具
 ![screenshot](screenshot/lanmitm_hijack_page.png)
 ![screenshot](screenshot/lanmitm_hijack_browser.png)
 ![screenshot](screenshot/lanmitm_hijack_history.png)
+![screenshot](screenshot/lanmitm_inject.png)
+![screenshot](screenshot/lanmitm_inject_result.png)
 ![screenshot](screenshot/lanmitm_sniffer.png)
 ![screenshot](screenshot/lanmitm_http_server_page.png)
 
