@@ -17,6 +17,8 @@ public class BaseService extends Service {
 	public static final int HIJACK_NOTICE = 2;
 	public static final int SNIFFER_NOTICE = 3;
 	public static final int INJECT_NOTICE = 4;
+	public static final int KILL_NOTICE = 5;
+	
 	public static final int ARPSPOOF_NOTICE = 0;
 
 	protected int my_notice_id = -1;
@@ -64,17 +66,18 @@ public class BaseService extends Service {
 
 	protected void stopArpService() {
 		if (!AppContext.isHijackRunning && !AppContext.isInjectRunning
-				&& !AppContext.isTcpdumpRunning) {
+				&& !AppContext.isTcpdumpRunning && !AppContext.isKillRunning) {
 			stopService(new Intent(this, ArpService.class));
 		}
 	}
 
 	protected void startArpService() {
 		if (!AppContext.isHijackRunning && !AppContext.isInjectRunning
-				&& !AppContext.isTcpdumpRunning) {
+				&& !AppContext.isTcpdumpRunning && !AppContext.isKillRunning) {
 			Intent intent = new Intent(this, ArpService.class);
 			intent.putExtra("arp_cheat_way", ArpService.ONE_WAY_HOST);
 			startService(intent);
 		}
 	}
+	
 }

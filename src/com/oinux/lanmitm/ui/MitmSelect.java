@@ -11,6 +11,7 @@ import com.oinux.lanmitm.AppContext;
 import com.oinux.lanmitm.R;
 import com.oinux.lanmitm.service.HijackService;
 import com.oinux.lanmitm.service.InjectService;
+import com.oinux.lanmitm.service.KillService;
 import com.oinux.lanmitm.service.SnifferService;
 
 public class MitmSelect extends ActionBarActivity implements OnClickListener {
@@ -26,6 +27,7 @@ public class MitmSelect extends ActionBarActivity implements OnClickListener {
 		findViewById(R.id.mitm_select_sniffer).setOnClickListener(this);
 		findViewById(R.id.mitm_select_hijack).setOnClickListener(this);
 		findViewById(R.id.mitm_select_inject).setOnClickListener(this);
+		findViewById(R.id.mitm_select_kill).setOnClickListener(this);
 	}
 
 	@Override
@@ -58,7 +60,13 @@ public class MitmSelect extends ActionBarActivity implements OnClickListener {
 			startActivity(intent);
 			finish();
 			break;
-
+		case R.id.mitm_select_kill:
+			if (AppContext.isKillRunning) {
+				stopService(new Intent(MitmSelect.this, KillService.class));
+			}
+			intent = new Intent(MitmSelect.this, KillActivity.class);
+			startActivity(intent);
+			finish();
 		default:
 			break;
 		}

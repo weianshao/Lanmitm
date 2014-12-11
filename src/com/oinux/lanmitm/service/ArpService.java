@@ -30,11 +30,16 @@ public class ArpService extends Service {
 	private String arp_spoof_recv_cmd = null;
 	private Thread arpSpoofRecv = null;
 	private int arp_cheat_way = -1;
+	private boolean ip_forward = true;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		ShellUtils.execCommand("killall arpspoof", true, true);
-		ShellUtils.execCommand(FORWARD_COMMANDS, true, true);
+		ip_forward = intent.getBooleanExtra("ip_forward", true);
+		if (ip_forward)
+			ShellUtils.execCommand(FORWARD_COMMANDS, true, true);
+		else
+			ShellUtils.execCommand(UN_FORWARD_COMMANDS, true, true);
 
 		String interfaceName = null;
 		try {
@@ -97,7 +102,8 @@ public class ArpService extends Service {
 		new Thread() {
 			public void run() {
 				ShellUtils.execCommand("killall arpspoof", true, true);
-				ShellUtils.execCommand(UN_FORWARD_COMMANDS, true, true);
+				if (ip_forward)
+					ShellUtils.execCommand(UN_FORWARD_COMMANDS, true, true);
 			}
 		}.start();
 		super.onDestroy();

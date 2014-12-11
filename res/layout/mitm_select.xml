@@ -103,4 +103,38 @@
             android:textSize="14.0dip" />
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000" />
+
+    <RelativeLayout
+        android:id="@+id/mitm_select_kill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff171c20"
+        android:gravity="left"
+        android:orientation="horizontal"
+        android:padding="10.0dip" >
+
+        <TextView
+            android:id="@+id/mitm_select_kill_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:paddingTop="4.0dip"
+            android:text="禁止上网"
+            android:textColor="#ffffffcc"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mitm_select_kill_head"
+            android:gravity="bottom|left|center"
+            android:text="使目标主机无法上网，开启该功能后其他功能将停止"
+            android:textColor="#ffffffff"
+            android:textSize="14.0dip" />
+    </RelativeLayout>
+
 </LinearLayout>

@@ -45,6 +45,7 @@
         <activity android:name="com.oinux.lanmitm.ui.InjectActivity" />
         <activity android:name="com.oinux.lanmitm.ui.HijackHistory" />
         <activity android:name="com.oinux.lanmitm.ui.MitmSelect" />
+        <activity android:name="com.oinux.lanmitm.ui.KillActivity" />
         <activity
             android:name="com.oinux.lanmitm.ui.AboutActivity"
             android:theme="@style/Activity_DialogTheme" />
@@ -54,6 +55,7 @@
         <service android:name="com.oinux.lanmitm.service.SnifferService" />
         <service android:name="com.oinux.lanmitm.service.HijackService" />
         <service android:name="com.oinux.lanmitm.service.InjectService" />
+        <service android:name="com.oinux.lanmitm.service.KillService" />
 
         <receiver android:name="com.oinux.lanmitm.receiver.NetworkReceiver" >
             <intent-filter>

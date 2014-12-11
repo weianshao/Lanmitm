@@ -38,6 +38,7 @@ public class AppContext extends Application {
 	public static boolean isHijackRunning = false;
 	public static boolean isTcpdumpRunning = false;
 	public static boolean isInjectRunning = false;
+	public static boolean isKillRunning = false;
 
 	private static String mStoragePath = null;
 	private static List<Session> mHijackList = null;
