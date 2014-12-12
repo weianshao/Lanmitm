@@ -16,6 +16,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 
 	private TextView homeLink;
 	private TextView upgradeLink;
+	private TextView githubLink;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +30,17 @@ public class AboutActivity extends Activity implements OnClickListener {
 		getWindow().setAttributes(lp);
 		
 		homeLink = (TextView) findViewById(R.id.my_home_link);
-		homeLink.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG ); //下划线
-		homeLink.getPaint().setAntiAlias(true);//抗锯齿
+		homeLink.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG ); 
+		homeLink.getPaint().setAntiAlias(true);
 		homeLink.setOnClickListener(this); 
 		upgradeLink = (TextView) findViewById(R.id.upgrade_history_link);
-		upgradeLink.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG ); //下划线
-		upgradeLink.getPaint().setAntiAlias(true);//抗锯齿
+		upgradeLink.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG ); 
+		upgradeLink.getPaint().setAntiAlias(true);
 		upgradeLink.setOnClickListener(this); 
+		githubLink = (TextView) findViewById(R.id.github_link);
+		githubLink.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG ); 
+		githubLink.getPaint().setAntiAlias(true);
+		githubLink.setOnClickListener(this); 
 	}
 
 	@Override
@@ -49,6 +54,10 @@ public class AboutActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.upgrade_history_link:
 			intent.putExtra("url", upgradeLink.getText());
+			startActivity(intent);
+			break;
+		case R.id.github_link:
+			intent.putExtra("url", githubLink.getText());
 			startActivity(intent);
 			break;
 		default:
