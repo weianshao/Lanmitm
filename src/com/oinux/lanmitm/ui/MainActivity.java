@@ -4,9 +4,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.KeyEvent;
@@ -15,8 +20,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -28,6 +33,7 @@ import com.oinux.lanmitm.service.HijackService;
 import com.oinux.lanmitm.service.SnifferService;
 import com.oinux.lanmitm.util.NetworkUtils;
 import com.oinux.lanmitm.util.ShellUtils;
+import com.oinux.lanmitm.util.ShellUtils.CommandResult;
 import com.oinux.lanmitm.widget.RadioDialog;
 import com.oinux.lanmitm.widget.YesOrNoDialog;
 
@@ -92,6 +98,119 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 				}
 			}
 		});
+
+		if (!ShellUtils.checkRootPermission()) {
+			YesOrNoDialog.Builder builder = new YesOrNoDialog.Builder(this);
+			builder.setTitle("系统提示")
+					.setMessage("本应用只能在已root的Android手机上运行，下载root工具？")
+					.setNegativeButton("下载",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+									if (checkAssistant("root工具")) {
+										Intent intent = new Intent(
+												Intent.ACTION_VIEW);
+										ComponentName cn = new ComponentName(
+												"com.qihoo.appstore",
+												"com.qihoo.appstore.activities.SearchDistributionActivity");
+										intent.setComponent(cn);
+										intent.setData(Uri
+												.parse("market://details?id=com.qihoo.permmgr"));
+										startActivity(intent);
+									}
+								}
+							})
+					.setPositiveButton("退出",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+									exit();
+								}
+							}).create().show();
+		} else {
+
+			CommandResult cr = ShellUtils.execCommand("which killall", true,
+					true, true);
+			if (cr.result != 0) {
+				YesOrNoDialog.Builder builder = new YesOrNoDialog.Builder(this);
+				builder.setTitle("系统提示")
+						.setMessage("本程序需要安装busybox才能正确运行，下载busybox？")
+						.setNegativeButton("下载",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.dismiss();
+										if (checkAssistant("busybox")) {
+											Intent intent = new Intent(
+													Intent.ACTION_VIEW);
+											ComponentName cn = new ComponentName(
+													"com.qihoo.appstore",
+													"com.qihoo.appstore.activities.SearchDistributionActivity");
+											intent.setComponent(cn);
+											intent.setData(Uri
+													.parse("market://details?id=stericson.busybox.donate"));
+											startActivity(intent);
+										}
+									}
+								})
+						.setPositiveButton("退出",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										dialog.dismiss();
+										exit();
+									}
+								}).create().show();
+			}
+		}
+	}
+
+	private boolean checkAssistant(String name) {
+		try {
+			getPackageManager().getApplicationInfo("com.qihoo.appstore",
+					PackageManager.GET_UNINSTALLED_PACKAGES);
+			return true;
+		} catch (NameNotFoundException e) {
+			YesOrNoDialog.Builder builder = new YesOrNoDialog.Builder(this);
+			builder.setTitle("系统提示")
+					.setMessage("本程序运行需要安装" + name + "，是否通过360手机助手安装它？")
+					.setNegativeButton("是",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+									Intent intent = new Intent();
+									intent.setAction("android.intent.action.VIEW");
+									Uri content_url = Uri
+											.parse("http://sj.360.cn");
+									intent.setData(content_url);
+									startActivity(intent);
+								}
+							})
+					.setPositiveButton("否",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+									exit();
+								}
+							}).create().show();
+			return false;
+		}
 	}
 
 	@Override
@@ -207,17 +326,21 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 					}
 				}, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
 			} else {
-				stopService(new Intent(this, ArpService.class));
-				stopService(new Intent(this, HijackService.class));
-				stopService(new Intent(this, SnifferService.class));
-				NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				nm.cancelAll();
-				finish();
-				android.os.Process.killProcess(android.os.Process.myPid());
+				exit();
 			}
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	private void exit() {
+		stopService(new Intent(this, ArpService.class));
+		stopService(new Intent(this, HijackService.class));
+		stopService(new Intent(this, SnifferService.class));
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancelAll();
+		finish();
+		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 
 }

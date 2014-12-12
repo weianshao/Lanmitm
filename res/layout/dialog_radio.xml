@@ -26,7 +26,7 @@
         <View
             android:id="@+id/dialog_divider"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_below="@id/title"
             android:background="#ffff5926" />
 
@@ -47,7 +47,7 @@
                 android:paddingBottom="10dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:paddingTop="20dp"
+                android:paddingTop="25dp"
                 android:text="选项1"
                 android:textColor="#ffffff"
                 android:textSize="17sp" />
