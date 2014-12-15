@@ -207,14 +207,16 @@ public class HijackHistory extends ActionBarActivity implements OnClickListener 
 			Map<String, BasicClientCookie> cookies = new HashMap<String, BasicClientCookie>();
 			JSONObject cookiesObject = jsonObject.optJSONObject("cookies");
 			JSONArray cookieArray = cookiesObject.names();
-			for (int i = 0; i < cookieArray.length(); i++) {
-				JSONObject cookieObject = cookiesObject
-						.getJSONObject(cookieArray.getString(i));
-				BasicClientCookie cookie = new BasicClientCookie(
-						cookieObject.optString("name"),
-						cookieObject.optString("value"));
-				cookie.setDomain(cookieObject.optString("domain"));
-				cookies.put(cookieArray.getString(i), cookie);
+			if (cookieArray != null) {
+				for (int i = 0; i < cookieArray.length(); i++) {
+					JSONObject cookieObject = cookiesObject
+							.getJSONObject(cookieArray.getString(i));
+					BasicClientCookie cookie = new BasicClientCookie(
+							cookieObject.optString("name"),
+							cookieObject.optString("value"));
+					cookie.setDomain(cookieObject.optString("domain"));
+					cookies.put(cookieArray.getString(i), cookie);
+				}
 			}
 			session.setCookies(cookies);
 		} catch (JSONException e) {

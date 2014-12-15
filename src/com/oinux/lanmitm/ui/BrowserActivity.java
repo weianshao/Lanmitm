@@ -222,21 +222,24 @@ public class BrowserActivity extends Activity implements OnClickListener {
 		if (cookies != null) {
 			sb.append("\"cookies\":{");
 			Set<Entry<String, BasicClientCookie>> entrySet = cookies.entrySet();
-			Iterator<Entry<String, BasicClientCookie>> it = entrySet.iterator();
-			while (it.hasNext()) {
-				Entry<String, BasicClientCookie> cookie = it.next();
-				sb.append("\"");
-				sb.append(cookie.getKey());
-				sb.append("\"");
-				sb.append(":{\"name\":\"");
-				sb.append(cookie.getValue().getName());
-				sb.append("\",\"domain\":\"");
-				sb.append(cookie.getValue().getDomain());
-				sb.append("\",\"value\":\"");
-				sb.append(cookie.getValue().getValue());
-				sb.append("\"},");
+			if (entrySet.size() > 0) {
+				Iterator<Entry<String, BasicClientCookie>> it = entrySet
+						.iterator();
+				while (it.hasNext()) {
+					Entry<String, BasicClientCookie> cookie = it.next();
+					sb.append("\"");
+					sb.append(cookie.getKey());
+					sb.append("\"");
+					sb.append(":{\"name\":\"");
+					sb.append(cookie.getValue().getName());
+					sb.append("\",\"domain\":\"");
+					sb.append(cookie.getValue().getDomain());
+					sb.append("\",\"value\":\"");
+					sb.append(cookie.getValue().getValue());
+					sb.append("\"},");
+				}
+				sb.deleteCharAt(sb.length() - 1);
 			}
-			sb.deleteCharAt(sb.length() - 1);
 			sb.append("}");
 		}
 		sb.append(",\"dateTime\":\"");

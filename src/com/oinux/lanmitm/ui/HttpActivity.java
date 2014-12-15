@@ -1,6 +1,13 @@
 package com.oinux.lanmitm.ui;
 
-import android.app.NotificationManager;
+import java.io.IOException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -144,5 +151,19 @@ public class HttpActivity extends ActionBarActivity implements OnClickListener {
 			break;
 		}
 	}
+
+//	private void cloneSite(String url) {
+//		HttpClient httpClient = new DefaultHttpClient();
+//		HttpGet httpGet = new HttpGet(url);
+//		try {
+//			HttpResponse response = httpClient.execute(httpGet);
+//			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+//				
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		httpClient.getConnectionManager().shutdown();
+//	}
 
 }

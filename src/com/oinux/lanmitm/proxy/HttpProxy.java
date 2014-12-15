@@ -356,6 +356,7 @@ public class HttpProxy extends Thread {
 							}
 						}
 					}
+					httpClient.getConnectionManager().shutdown();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
