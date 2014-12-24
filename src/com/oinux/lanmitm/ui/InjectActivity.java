@@ -1,6 +1,7 @@
 package com.oinux.lanmitm.ui;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -73,8 +74,9 @@ public class InjectActivity extends ActionBarActivity implements
 		urlPatternText = (EditText) findViewById(R.id.inject_pattern);
 		injectCodeText = (EditText) findViewById(R.id.inject_code);
 
-		urlPatternText.setText(HttpProxy.getInstance().getInjectPattern().pattern());
-		injectCodeText.setText(HttpProxy.getInstance().getInject()); 
+		urlPatternText.setText(HttpProxy.getInstance().getInjectPattern()
+				.pattern());
+		injectCodeText.setText(HttpProxy.getInstance().getInject());
 	}
 
 	@Override
@@ -92,8 +94,13 @@ public class InjectActivity extends ActionBarActivity implements
 					injectCodeText.getEditableText().toString());
 			String pattern = urlPatternText.getEditableText().toString();
 			if (!pattern.isEmpty()) {
-				HttpProxy.getInstance().setInjectPattern(
-						Pattern.compile(pattern));
+				try {
+					HttpProxy.getInstance().setInjectPattern(
+							Pattern.compile(pattern));
+				} catch (PatternSyntaxException e) {
+					Toast.makeText(this, "正则表达式不符合规则", Toast.LENGTH_SHORT)
+							.show();
+				}
 			}
 			Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
 			break;
