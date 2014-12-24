@@ -146,24 +146,10 @@ public class HttpActivity extends ActionBarActivity implements OnClickListener {
 			}
 			break;
 		case R.id.httpserver_clone_btn:
-			Toast.makeText(this, "还没写", Toast.LENGTH_SHORT).show();
+			Intent intent = new Intent(this, HttpClone.class);
+			startActivity(intent);
 		default:
 			break;
 		}
 	}
-
-//	private void cloneSite(String url) {
-//		HttpClient httpClient = new DefaultHttpClient();
-//		HttpGet httpGet = new HttpGet(url);
-//		try {
-//			HttpResponse response = httpClient.execute(httpGet);
-//			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-//				
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		httpClient.getConnectionManager().shutdown();
-//	}
-
 }

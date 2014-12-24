@@ -37,6 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.oinux.lanmitm.ui.HttpClone" />
         <activity android:name="com.oinux.lanmitm.ui.HostsActivity" />
         <activity android:name="com.oinux.lanmitm.ui.SniffActivity" />
         <activity android:name="com.oinux.lanmitm.ui.HijackActivity" />
