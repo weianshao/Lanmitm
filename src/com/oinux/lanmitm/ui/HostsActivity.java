@@ -35,8 +35,8 @@ import android.widget.TextView;
 
 import com.oinux.lanmitm.ActionBarActivity;
 import com.oinux.lanmitm.AppContext;
-import com.oinux.lanmitm.HostAdapter;
 import com.oinux.lanmitm.R;
+import com.oinux.lanmitm.adapter.HostAdapter;
 import com.oinux.lanmitm.entity.LanHost;
 import com.oinux.lanmitm.service.HijackService;
 import com.oinux.lanmitm.service.InjectService;

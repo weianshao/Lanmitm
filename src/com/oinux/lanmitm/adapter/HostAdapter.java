@@ -1,4 +1,4 @@
-package com.oinux.lanmitm;
+package com.oinux.lanmitm.adapter;
 
 import java.util.List;
 
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.oinux.lanmitm.R;
+import com.oinux.lanmitm.R.id;
+import com.oinux.lanmitm.R.layout;
 import com.oinux.lanmitm.entity.LanHost;
 
 public class HostAdapter extends BaseAdapter {
