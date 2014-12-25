@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -23,6 +22,7 @@ import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,6 +37,7 @@ public class HttpClone extends ActionBarActivity {
 	private Stack<String> urlStack;
 	private ExecutorService urlParseExecutors;
 	private Handler logHandler;
+	private CheckBox cssBtn, jsBtn, pngBtn, jpgBtn, gifBtn;
 	private int infoColor, warnColor, errorColor;
 
 	@Override
@@ -50,6 +51,12 @@ public class HttpClone extends ActionBarActivity {
 		infoColor = getResources().getColor(R.color.log_info);
 		warnColor = getResources().getColor(R.color.log_warn);
 		errorColor = getResources().getColor(R.color.log_error);
+
+		cssBtn = (CheckBox) findViewById(R.id.css_check);
+		jsBtn = (CheckBox) findViewById(R.id.js_check);
+		pngBtn = (CheckBox) findViewById(R.id.png_check);
+		jpgBtn = (CheckBox) findViewById(R.id.jpg_check);
+		gifBtn = (CheckBox) findViewById(R.id.gif_check);
 
 		cloneBtn = (Button) findViewById(R.id.clone_btn);
 		cloneBtn.setOnClickListener(new View.OnClickListener() {
